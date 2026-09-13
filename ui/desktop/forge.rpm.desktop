@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=INDRA
+Exec=/usr/lib/INDRA/INDRA %U
+Icon=/usr/share/pixmaps/INDRA.png
+Terminal=false
+Type=Application
+Categories=Development;
+MimeType=x-scheme-handler/goose;

@@ -1,0 +1,46 @@
+[workspace]
+release = false
+pr_name = "chore(GDK): release{% if version %} v{{ version }}{% endif %}"
+git_tag_enable = false
+git_tag_name = "gdk-v{{ version }}"
+git_release_enable = false
+
+[[package]]
+name = "indra-provider-types"
+release = true
+version_group = "gdk"
+
+[[package]]
+name = "indra-sdk-types"
+release = true
+version_group = "gdk"
+
+[[package]]
+name = "indra-download-manager"
+release = true
+version_group = "gdk"
+
+[[package]]
+name = "indra-local-inference"
+release = true
+version_group = "gdk"
+
+[[package]]
+name = "indra-providers"
+release = true
+version_group = "gdk"
+
+[[package]]
+name = "indra-agent"
+release = true
+version_group = "gdk"
+
+[[package]]
+name = "indra-context-management"
+release = true
+version_group = "gdk"
+
+[[package]]
+name = "indra-sdk"
+release = true
+version_group = "gdk"

@@ -1,0 +1,93 @@
+INDRA
+Copyright 2026 Hari Karthick <karthickramachandran22@gmail.com>
+
+This product is a derivative work of goose, an open source AI agent framework.
+
+    goose
+    Copyright 2024 Block, Inc.
+    and the goose contributors, who retain copyright in their own
+    contributions (see the upstream GOVERNANCE.md).
+    Upstream package metadata credits: AAIF <ai-oss-tools@block.xyz>
+
+goose is licensed under the Apache License, Version 2.0. INDRA is distributed
+under that same license. The complete license text is in the LICENSE file at
+the root of this repository, and at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied. See the License for the
+specific language governing permissions and limitations under the License.
+
+
+Origin and modifications
+------------------------
+
+INDRA was forked from goose at upstream version 1.50.0 (the version recorded in
+[workspace.package] of Cargo.toml; the upstream repository recorded there is
+https://github.com/aaif-goose/goose).
+
+Files in this repository have been modified from their upstream form. As
+required by Section 4(b) of the Apache License, the changes are:
+
+  - Renaming of the project to INDRA across the shipped binary, crate names,
+    environment variable prefixes (GOOSE_* to INDRA_*), and the user
+    configuration directory. This rename is in progress; some upstream `goose`
+    identifiers remain in the source tree.
+
+  - Addition of a specialist routing layer under
+    crates/indra/src/agents/specialists/, which classifies an incoming request
+    into an operation and dispatches it to a domain specialist.
+
+  - Removal of upstream project infrastructure that does not carry over to this
+    fork, including the goose documentation site, blog, community channels, and
+    organization automation.
+
+  - Further modifications throughout the Rust crates and the Electron desktop
+    application.
+
+The goose name is used in this file and in the source tree only to identify the
+upstream work from which INDRA is derived. This does not imply endorsement of
+INDRA by Block, Inc., by AAIF, or by the goose maintainers.
+
+
+Third-party components bundled in this repository
+-------------------------------------------------
+
+The following browser libraries are vendored under
+crates/indra-mcp/src/autovisualiser/templates/assets/ and are redistributed
+under their own licenses. Their full license texts are in
+crates/indra-mcp/licenses/:
+
+  Chart.js
+    Copyright (c) 2014-2024 Chart.js Contributors
+    MIT License - crates/indra-mcp/licenses/chart-js.license
+
+  D3
+    Copyright 2010-2023 Mike Bostock
+    crates/indra-mcp/licenses/d3-js.license
+
+  d3-sankey
+    Copyright 2015 Mike Bostock
+    crates/indra-mcp/licenses/d3-sankey.license
+
+  Leaflet
+    Copyright (c) 2010-2023 Volodymyr Agafonkin
+    Copyright (c) 2010-2011 CloudMade
+    BSD 2-Clause License - crates/indra-mcp/licenses/leaflet.license
+
+  Leaflet.markercluster
+    Copyright 2012 David Leaver
+    crates/indra-mcp/licenses/leaflet-markercluster.license
+
+  Mermaid
+    Copyright (c) 2014-2022 Knut Sveidqvist
+    MIT License - crates/indra-mcp/licenses/mermaid.license
+
+The local dictation module (crates/indra/src/dictation/whisper.rs) is derived
+from the Whisper example in the Candle project
+(https://github.com/huggingface/candle).
+
+Rust and Node dependencies are not vendored in this repository; each retains
+its own license as declared by its own package.
