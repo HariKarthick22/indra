@@ -20,7 +20,7 @@ importers:
     dependencies:
       '@aaif/goose-acp-client':
         specifier: workspace:*
-        version: link:../goose-acp-client
+        version: link:../indra-acp-client
       '@agentclientprotocol/sdk':
         specifier: 1.3.0
         version: 1.3.0(zod@4.4.3)
@@ -175,8 +175,8 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0
       uuid:
-        specifier: ^13.0.0
-        version: 13.0.0
+        specifier: ^14.0.2
+        version: 14.0.2
       zod:
         specifier: ^4.4.3
         version: 4.4.3
@@ -332,7 +332,7 @@ importers:
         specifier: ^4.1.10
         version: 4.1.10(@opentelemetry/api@1.9.0)(@types/node@26.2.0)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@28.1.0(supports-color@8.1.1))(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.50.0)(tsx@4.23.12)(yaml@2.8.2))
 
-  goose-acp:
+  indra-acp:
     devDependencies:
       '@types/node':
         specifier: ^26.2.0
@@ -344,23 +344,23 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
     optionalDependencies:
-      '@aaif/goose-binary-darwin-arm64':
+      '@aaif/indra-binary-darwin-arm64':
         specifier: workspace:*
-        version: link:../goose-binary/goose-binary-darwin-arm64
-      '@aaif/goose-binary-darwin-x64':
+        version: link:../indra-binary/indra-binary-darwin-arm64
+      '@aaif/indra-binary-darwin-x64':
         specifier: workspace:*
-        version: link:../goose-binary/goose-binary-darwin-x64
-      '@aaif/goose-binary-linux-arm64':
+        version: link:../indra-binary/indra-binary-darwin-x64
+      '@aaif/indra-binary-linux-arm64':
         specifier: workspace:*
-        version: link:../goose-binary/goose-binary-linux-arm64
-      '@aaif/goose-binary-linux-x64':
+        version: link:../indra-binary/indra-binary-linux-arm64
+      '@aaif/indra-binary-linux-x64':
         specifier: workspace:*
-        version: link:../goose-binary/goose-binary-linux-x64
-      '@aaif/goose-binary-win32-x64':
+        version: link:../indra-binary/indra-binary-linux-x64
+      '@aaif/indra-binary-win32-x64':
         specifier: workspace:*
-        version: link:../goose-binary/goose-binary-win32-x64
+        version: link:../indra-binary/indra-binary-win32-x64
 
-  goose-acp-client:
+  indra-acp-client:
     dependencies:
       '@modelcontextprotocol/ext-apps':
         specifier: ^0.3.1
@@ -391,15 +391,15 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
 
-  goose-binary/goose-binary-darwin-arm64: {}
+  indra-binary/indra-binary-darwin-arm64: {}
 
-  goose-binary/goose-binary-darwin-x64: {}
+  indra-binary/indra-binary-darwin-x64: {}
 
-  goose-binary/goose-binary-linux-arm64: {}
+  indra-binary/indra-binary-linux-arm64: {}
 
-  goose-binary/goose-binary-linux-x64: {}
+  indra-binary/indra-binary-linux-x64: {}
 
-  goose-binary/goose-binary-win32-x64: {}
+  indra-binary/indra-binary-win32-x64: {}
 
 packages:
 
@@ -6939,8 +6939,8 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  uuid@13.0.0:
-    resolution: {integrity: sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==}
+  uuid@14.0.2:
+    resolution: {integrity: sha512-xZe/16rV4aa+HGSOCiY2YeLT1OybRLrrkL/Rqaq7p7GMVXjFh+6wN4oMYgjFmnSnhY8t6Xpdl2l9qmnHYuMHwQ==}
     hasBin: true
 
   validate-npm-package-license@3.0.4:
@@ -14858,7 +14858,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  uuid@13.0.0: {}
+  uuid@14.0.2: {}
 
   validate-npm-package-license@3.0.4:
     dependencies:
