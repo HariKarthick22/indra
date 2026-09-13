@@ -2460,6 +2460,8 @@ impl Agent {
             );
         }
 
+        let hardware_profile = crate::sovereign::hardware::HardwareProfile::probe();
+
         self.reset_retry_attempts().await;
 
         let provider = self.provider().await?;
@@ -2789,6 +2791,25 @@ impl Agent {
                                         "operation",
                                         serde_json::json!(specialist_op.as_str()),
                                     );
+                                    if let Some((reason, warning)) = specialist_op.selection_trace(
+                                        &model_config.model_name,
+                                        model_config.context_limit,
+                                        model_config.supports_vision,
+                                        &hardware_profile,
+                                    ) {
+                                        response.metadata.set_operation_note(
+                                            "specialist",
+                                            "model_selection_reason",
+                                            serde_json::json!(reason),
+                                        );
+                                        if let Some(warning) = warning {
+                                            response.metadata.set_operation_note(
+                                                "specialist",
+                                                "model_selection_warning",
+                                                serde_json::json!(warning),
+                                            );
+                                        }
+                                    }
                                 }
 
                                 if !response.content.is_empty()

@@ -1,12 +1,82 @@
-use anyhow::Result;
+use anyhow::{bail, Result};
 use async_trait::async_trait;
 use regex::Regex;
 use std::collections::HashSet;
-use std::sync::OnceLock;
+use std::sync::{Mutex, OnceLock};
+use std::time::Duration;
 
 use crate::config::GooseMode;
 use crate::conversation::message::{Message, ToolRequest};
 use crate::tool_inspection::{InspectionAction, InspectionResult, ToolInspector};
+
+/// Record of a single outbound-network attempt observed by the sovereign
+/// egress proof surface (see `trigger_probe`). This is separate from the
+/// pattern-based `EgressInspector` above, which only advises on commands
+/// that *mention* a network destination.
+#[derive(Debug, Clone)]
+pub struct EgressAttempt {
+    pub target: String,
+    pub blocked: bool,
+    pub reason: String,
+    pub timestamp: chrono::DateTime<chrono::Utc>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct EgressLog {
+    pub attempts: Vec<EgressAttempt>,
+}
+
+static EGRESS_LOG: Mutex<Vec<EgressAttempt>> = Mutex::new(Vec::new());
+
+impl EgressLog {
+    pub fn current() -> Self {
+        let attempts = EGRESS_LOG.lock().map(|log| log.clone()).unwrap_or_default();
+        Self { attempts }
+    }
+}
+
+fn record_attempt(target: &str, blocked: bool, reason: impl Into<String>) {
+    if let Ok(mut log) = EGRESS_LOG.lock() {
+        log.push(EgressAttempt {
+            target: target.to_string(),
+            blocked,
+            reason: reason.into(),
+            timestamp: chrono::Utc::now(),
+        });
+    }
+}
+
+/// Deliberately attempts to reach a real external URL, for the live A5 demo.
+///
+/// This performs a genuine, un-rigged connection attempt — real DNS
+/// resolution, real socket connect, no self-sinkholing. Sovereignty here is
+/// an *infrastructure* property (the deployment has no route to the
+/// internet), not something INDRA's own process enforces against a
+/// networked host — `EgressInspector::inspect` below only logs egress-looking
+/// commands and always returns `Allow`; it is not a firewall. The only real,
+/// code-level network denial in this codebase is the sandbox's
+/// `--network=none` / `unshare -n` isolation (`sovereign::sandbox`).
+///
+/// On the actual air-gapped target this call fails because no route exists.
+/// On a normal networked machine (a dev laptop) it will genuinely succeed —
+/// that is the correct, honest answer for that machine, not a bug to hide.
+pub fn trigger_probe(url: &str) -> Result<()> {
+    let client = reqwest::blocking::Client::builder()
+        .timeout(Duration::from_secs(5))
+        .build()?;
+
+    match client.get(url).send() {
+        Ok(resp) => {
+            let reason = format!("connection succeeded with status {}", resp.status());
+            record_attempt(url, false, reason.clone());
+            bail!("egress probe reached the network: {reason}");
+        }
+        Err(err) => {
+            record_attempt(url, true, err.to_string());
+            Ok(())
+        }
+    }
+}
 
 pub struct EgressInspector;
 

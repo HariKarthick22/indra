@@ -8,10 +8,10 @@ use crate::providers::base::Provider;
 use crate::providers::base::{stream_from_single_message, MessageStream};
 use crate::{config::Config, token_counter::create_token_counter};
 use anyhow::Result;
+use indoc::indoc;
 use indra_providers::conversation::token_usage::ProviderUsage;
 use indra_providers::errors::ProviderError;
 use indra_providers::model::ModelConfig;
-use indoc::indoc;
 use rmcp::model::Role;
 #[cfg(test)]
 use rmcp::model::{Annotations, ContentBlock, TextContent};

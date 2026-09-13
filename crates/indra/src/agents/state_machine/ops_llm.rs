@@ -169,6 +169,13 @@ impl Provider for GooseInferenceProvider {
             crate::agents::specialists::SpecialistRegistry::new().route(&latest_user_text);
         let specialist_name = specialist.name().to_string();
         let specialist_op_str = specialist_op.as_str().to_string();
+        let hardware_profile = crate::sovereign::hardware::HardwareProfile::probe();
+        let selection_trace = specialist_op.selection_trace(
+            &model_config.model_name,
+            model_config.context_limit,
+            model_config.supports_vision,
+            &hardware_profile,
+        );
 
         Ok(Box::pin(stream.map(move |result| {
             result.map(|(message, usage)| {
@@ -190,6 +197,20 @@ impl Provider for GooseInferenceProvider {
                             "operation",
                             serde_json::json!(specialist_op_str),
                         );
+                        if let Some((reason, warning)) = &selection_trace {
+                            message.metadata.set_operation_note(
+                                "specialist",
+                                "model_selection_reason",
+                                serde_json::json!(reason),
+                            );
+                            if let Some(warning) = warning {
+                                message.metadata.set_operation_note(
+                                    "specialist",
+                                    "model_selection_warning",
+                                    serde_json::json!(warning),
+                                );
+                            }
+                        }
                     }
                     message
                 });
