@@ -108,3 +108,4 @@ venv/
 # Local scratch
 *.orig
 *.rej
+.claude/

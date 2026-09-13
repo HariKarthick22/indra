@@ -2,6 +2,7 @@ use crate::session::builder::ExtensionFailure;
 use anstream::{adapter::strip_str, eprintln, println};
 use bat::WrappingMode;
 use console::{measure_text_width, style, Color, StyledObject, Term};
+use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use indra::config::Config;
 use indra::conversation::message::{
     ActionRequiredData, Message, MessageContent, SystemNotificationContent, SystemNotificationType,
@@ -12,7 +13,6 @@ use indra::providers::canonical_cost::estimate_model_cost;
 use indra::subprocess::SubprocessExt;
 use indra::utils::safe_truncate;
 use indra_providers::conversation::token_usage::Usage;
-use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use rmcp::model::{CallToolRequestParams, JsonObject, PromptArgument, Role};
 use serde_json::Value;
 use std::cell::RefCell;
