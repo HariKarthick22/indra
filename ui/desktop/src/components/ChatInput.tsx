@@ -176,9 +176,6 @@ interface ChatInputProps {
   setView: (view: View) => void;
   totalTokens?: number;
   contextLimit?: number;
-  accumulatedInputTokens?: number;
-  accumulatedOutputTokens?: number;
-  accumulatedCost?: number | null;
   messages?: Message[];
   disableAnimation?: boolean;
   recipe?: Recipe | null;
@@ -213,9 +210,6 @@ export default function ChatInput({
   setView,
   totalTokens,
   contextLimit,
-  accumulatedInputTokens,
-  accumulatedOutputTokens,
-  accumulatedCost,
   messages = [],
   disableAnimation = false,
   recipe: _recipe,
@@ -299,7 +293,7 @@ export default function ChatInput({
     setLastInterruption(null);
   }, []);
 
-  const { alerts, addAlert, clearAlerts } = useAlerts();
+  const { addAlert, clearAlerts } = useAlerts();
   const dropdownRef: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(
     null
   ) as React.RefObject<HTMLDivElement>;
