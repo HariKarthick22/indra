@@ -19,7 +19,6 @@ import ExecutionTimeline from './ExecutionTimeline';
 import ToolCallConfirmation from './ToolCallConfirmation';
 import ElicitationRequest from './ElicitationRequest';
 import MessageCopyLink from './MessageCopyLink';
-import MessageUsageStats from './MessageUsageStats';
 import { cn } from '../utils';
 import type { ToolRenderState } from './messageRowContext';
 import {
@@ -148,11 +147,6 @@ function GooseMessage({
                     <MessageCopyLink text={displayText} contentRef={contentRef} />
                   </div>
                 )}
-                {!isStreaming && message.metadata.usage && (
-                  <div className="pt-1 transition-all duration-200 opacity-0 group-hover:opacity-100 -translate-y-4 group-hover:translate-y-0">
-                    <MessageUsageStats usage={message.metadata.usage} />
-                  </div>
-                )}
               </div>
             )}
           </div>
@@ -196,11 +190,6 @@ function GooseMessage({
                 >
                   {!isStreaming && !hideTimestamp && timestamp}
                 </div>
-                {!isStreaming && message.metadata.usage && (
-                  <div className="pt-1 transition-all duration-200 opacity-0 group-hover:opacity-100 -translate-y-4 group-hover:translate-y-0">
-                    <MessageUsageStats usage={message.metadata.usage} />
-                  </div>
-                )}
               </div>
             </div>
           </div>

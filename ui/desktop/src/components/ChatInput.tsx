@@ -21,9 +21,6 @@ import { useAudioRecorder } from '../hooks/useAudioRecorder';
 import { useFocusOnTyping } from '../hooks/useFocusOnTyping';
 import { toastError } from '../toasts';
 import MentionPopover, { DisplayItemWithMatch } from './MentionPopover';
-import { COST_TRACKING_ENABLED } from '../updates';
-import { CostTracker } from './bottom_menu/CostTracker';
-import { ContextWindowIndicator } from './bottom_menu/ContextWindowIndicator';
 import { DroppedFile, useFileDrop } from '../hooks/useFileDrop';
 import { Recipe } from '../recipe';
 import { MessageQueue, QueuedMessage } from './MessageQueue';
@@ -1730,24 +1727,6 @@ export default function ChatInput({
 
         {!isBottomBarNarrow && (
           <>
-            {/* Right: cost tracker (when enabled) */}
-            {COST_TRACKING_ENABLED && (
-              <CostTracker
-                inputTokens={accumulatedInputTokens}
-                outputTokens={accumulatedOutputTokens}
-                accumulatedCost={accumulatedCost}
-                model={effectiveModel}
-                provider={effectiveProvider}
-              />
-            )}
-
-            {/* Right: context window indicator */}
-            <ContextWindowIndicator
-              totalTokens={totalTokens || 0}
-              tokenLimit={tokenLimit}
-              alerts={alerts}
-            />
-
             {/* Right: extension selector */}
             <BottomMenuExtensionSelection
               sessionId={sessionId}
