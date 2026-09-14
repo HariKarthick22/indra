@@ -138,7 +138,7 @@ function GooseMessage({
             {toolRequests.length === 0 && (
               <div className="relative flex items-center justify-between">
                 {!isStreaming && (
-                  <div className="text-xs font-mono text-text-secondary pt-1 transition-all duration-200 group-hover:-translate-y-4 group-hover:opacity-0">
+                  <div className="text-xs font-mono text-text-secondary pt-1">
                     {timestamp}
                   </div>
                 )}
@@ -181,13 +181,7 @@ function GooseMessage({
                 })}
               </div>
               <div className="flex items-center justify-between">
-                <div
-                  className={cn(
-                    'text-xs text-text-secondary pt-1',
-                    message.metadata.usage &&
-                      'transition-all duration-200 group-hover:-translate-y-4 group-hover:opacity-0'
-                  )}
-                >
+                <div className="text-xs text-text-secondary pt-1">
                   {!isStreaming && !hideTimestamp && timestamp}
                 </div>
               </div>

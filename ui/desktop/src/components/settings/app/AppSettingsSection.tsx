@@ -429,7 +429,6 @@ export default function AppSettingsSection({ scrollToSection }: AppSettingsSecti
               />
             </div>
           </div>
-
         </CardContent>
       </Card>
 
