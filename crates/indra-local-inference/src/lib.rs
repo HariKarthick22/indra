@@ -1,4 +1,5 @@
 pub mod config_resolver;
+pub mod embedding;
 #[cfg(feature = "hf-hub")]
 pub use indra_download_manager as download_manager;
 #[cfg(feature = "hf-hub")]
