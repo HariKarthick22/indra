@@ -4,6 +4,7 @@
 
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import './indra-tokens.css';
 @plugin '@tailwindcss/typography';
 
 @source '../../index.html';

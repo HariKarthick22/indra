@@ -1,0 +1,99 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   INDRA DESIGN TOKENS
+   Source: INDRA-system-and-ui-design.md §3.2-3.5 (colour, typography, space,
+   radius, line, motion). These are new, standalone tokens for the INDRA
+   design system — not yet wired into the existing Goose UI tokens above.
+
+   Theme mechanism: matches this file's existing `.dark` class-toggle
+   convention (see `@custom-variant dark` above), but with polarity flipped —
+   Ash Dark is INDRA's default, so it lives on `:root` and Chalk Light is the
+   `.light` override class.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Colour — Ash Dark (default) */
+  --bg: #0a0a0a;
+  --surface: #121212;
+  --raised: #1a1a1a;
+  --hover: #232323;
+  --line: #2c2c2c;
+  --line-strong: #3a3a3a;
+  --text-faint: #5c5c5c;
+  --text-dim: #8a8a8a;
+  --text: #d6d6d6;
+  --text-hi: #ffffff;
+
+  /* Colour — Signal (dark values) */
+  --sealed: #5e9e77;
+  --degraded: #c7943f;
+  --blocked: #c4675a;
+  --focus: #4c7df0;
+
+  /* Typography */
+  --font-ui:
+    'Geist Sans', ui-sans-serif, system-ui;
+  --font-mono:
+    'Geist Mono', ui-monospace, SFMono-Regular;
+
+  --t-11: 11px;
+  --t-11--line-height: 16px;
+  --t-12: 12px;
+  --t-12--line-height: 18px;
+  --t-13: 13px;
+  --t-13--line-height: 20px;
+  --t-14: 14px;
+  --t-14--line-height: 22px;
+  --t-16: 16px;
+  --t-16--line-height: 24px;
+  --t-20: 20px;
+  --t-20--line-height: 28px;
+  --t-28: 28px;
+  --t-28--line-height: 34px;
+
+  /* Space, 4px base */
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 6px;
+  --space-4: 8px;
+  --space-5: 12px;
+  --space-6: 16px;
+  --space-7: 24px;
+  --space-8: 32px;
+  --space-9: 48px;
+  --space-10: 64px;
+
+  /* Radius */
+  --r-sm: 3px;
+  --r-md: 6px;
+  --r-lg: 10px;
+  --r-full: 999px;
+
+  /* Motion */
+  --m-tap: 90ms;
+  --m-ui: 160ms;
+  --m-enter: 240ms;
+  --m-glyph: 120ms;
+  --ease-tap: cubic-bezier(0.2, 0, 0.4, 1);
+  --ease-ui: cubic-bezier(0.2, 0, 0, 1);
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.light {
+  /* Colour — Chalk Light */
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --raised: #f4f4f4;
+  --hover: #ededed;
+  --line: #e2e2e2;
+  --line-strong: #cfcfcf;
+  --text-faint: #a0a0a0;
+  --text-dim: #6b6b6b;
+  --text: #1f1f1f;
+  --text-hi: #000000;
+
+  /* Colour — Signal (light values) */
+  --sealed: #2f7a4e;
+  --degraded: #9a6b18;
+  --blocked: #a83b2c;
+  --focus: #2e5fd0;
+}
