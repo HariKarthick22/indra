@@ -873,6 +873,10 @@ impl MessageMetadata {
         self.operations.as_ref()?.get(operation)?.get(key)
     }
 
+    pub fn get_operation_note(&self, operation: &str, key: &str) -> Option<&serde_json::Value> {
+        self.operation_note(operation, key)
+    }
+
     pub fn set_operation_note(&mut self, operation: &str, key: &str, value: serde_json::Value) {
         self.operations
             .get_or_insert_with(Box::default)

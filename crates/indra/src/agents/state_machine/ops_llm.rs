@@ -14,6 +14,7 @@ use indra_providers::model::ModelConfig;
 
 use crate::agents::extension_manager::{get_tool_owner, recover_mangled_tool_name};
 use crate::agents::state_machine::GooseEffect;
+use crate::events::{emit, IndraEvent};
 
 pub(super) use indra_agent::inference::{chat_span, record_chat_usage};
 
@@ -170,6 +171,7 @@ impl Provider for GooseInferenceProvider {
         let specialist_name = specialist.name().to_string();
         let specialist_op_str = specialist_op.as_str().to_string();
         let hardware_profile = crate::sovereign::hardware::HardwareProfile::probe();
+        let model_id = model_config.model_name.clone();
         let selection_trace = specialist_op.selection_trace(
             &model_config.model_name,
             model_config.context_limit,
@@ -198,18 +200,21 @@ impl Provider for GooseInferenceProvider {
                             serde_json::json!(specialist_op_str),
                         );
                         if let Some((reason, warning)) = &selection_trace {
-                            message.metadata.set_operation_note(
-                                "specialist",
-                                "model_selection_reason",
-                                serde_json::json!(reason),
+                            emit(
+                                &mut message.metadata,
+                                IndraEvent::ModelSelected {
+                                    model_id: model_id.clone(),
+                                    reason: reason.clone(),
+                                    fit: warning
+                                        .as_ref()
+                                        .map(|w| {
+                                            serde_json::json!({"kind": "degraded", "warning": w})
+                                        })
+                                        .unwrap_or_else(|| {
+                                            serde_json::json!({"kind": "comfortable"})
+                                        }),
+                                },
                             );
-                            if let Some(warning) = warning {
-                                message.metadata.set_operation_note(
-                                    "specialist",
-                                    "model_selection_warning",
-                                    serde_json::json!(warning),
-                                );
-                            }
                         }
                     }
                     message

@@ -60,6 +60,7 @@ use crate::conversation::message::{
 use crate::conversation::{
     debug_conversation_fix, fix_conversation, merge_consecutive_messages_for_request, Conversation,
 };
+use crate::events::{emit, IndraEvent};
 use crate::permission::permission_inspector::PermissionInspector;
 use crate::permission::permission_judge::PermissionCheckResult;
 use crate::permission::{Permission, PermissionConfirmation};
@@ -2797,18 +2798,21 @@ impl Agent {
                                         model_config.supports_vision,
                                         &hardware_profile,
                                     ) {
-                                        response.metadata.set_operation_note(
-                                            "specialist",
-                                            "model_selection_reason",
-                                            serde_json::json!(reason),
+                                        emit(
+                                            &mut response.metadata,
+                                            IndraEvent::ModelSelected {
+                                                model_id: model_config.model_name.clone(),
+                                                reason: reason.clone(),
+                                                fit: warning
+                                                    .as_ref()
+                                                    .map(|w| {
+                                                        serde_json::json!({"kind": "degraded", "warning": w})
+                                                    })
+                                                    .unwrap_or_else(|| {
+                                                        serde_json::json!({"kind": "comfortable"})
+                                                    }),
+                                            },
                                         );
-                                        if let Some(warning) = warning {
-                                            response.metadata.set_operation_note(
-                                                "specialist",
-                                                "model_selection_warning",
-                                                serde_json::json!(warning),
-                                            );
-                                        }
                                     }
                                 }
 
