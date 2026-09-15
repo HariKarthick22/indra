@@ -25,7 +25,7 @@ parameters:
     input_type: string
     requirement: optional
     default: "all"
-    description: "Which test phases to run: all, basic, extensions, delegation, reasoning, acp-effort, advanced"
+    description: "Which test phases to run: all, basic, extensions, delegation, reasoning, acp-effort, sovereign, advanced"
 
   - key: test_depth
     input_type: string
@@ -440,6 +440,60 @@ prompt: |
   5. Verify `clear_observability_hook` stops events for in-flight requests as well as new ones.
 
   Log results to: {{ workspace_dir }}/phase3e_observability.md
+  {% endif %}
+
+  {% if test_phases == "all" or "sovereign" in test_phases %}
+  ## 🔒 PHASE 3F: Sovereign Workbench Testing (SIH 26117)
+
+  Validates the air-gapped agentic workbench backend: capability-based model
+  selection, the network-isolated sandbox, OCR-grounded citations, the write
+  guard, and the zero-egress proof. Full coverage lives in
+  `cargo test -p indra` and `cargo test -p indra-mcp` (modules under
+  `sovereign/`) — this phase is the live, first-person complement: you using
+  your own tools to observe the same guarantees from inside a running session,
+  not a substitute for those unit tests.
+
+  ### Model Selection Trace (A1)
+  1. Ask a code-generation question (e.g. "write a Python function to reverse a linked list").
+  2. Ask an unrelated general-knowledge question in a fresh turn.
+  3. If model-selection metadata is surfaced to you (via `model_selection_reason` /
+     `model_selection_warning` operation notes), confirm the two turns cite different
+     models or a different reason, with any hardware-fit warning shown verbatim rather
+     than suppressed.
+  4. If no such metadata is visible from inside the session, record this phase as
+     SKIPPED with a note that A1 is verified at the unit level
+     (`crates/indra/tests/sovereign_model_selection.rs`) but not yet observable live.
+
+  ### OCR-Grounded Approval Note (A2, A4)
+  1. Call `ocr_extract_lines` on `crates/indra-mcp/tests/fixtures/sample_inspection.png`.
+  2. Confirm it returns numbered lines, each with a page and bounding box — not just
+     bare text.
+  3. Using only text actually returned by step 1, call `generate_inspection_approval_note`
+     with at least one finding whose `quoted_text` and `boxes` come directly from an
+     OCR line. Do not fabricate a citation.
+  4. Confirm a real `.docx` file is produced (nonzero size) at the given output path.
+  5. This is the headline end-to-end path: a scanned document in, a cited Word
+     document out, with no step skipped.
+
+  ### Sandbox Isolation (A3, A5)
+  1. If a code-execution tool backed by `sovereign::sandbox` is available in this
+     session, run a snippet that attempts an outbound socket connection.
+  2. Confirm the connection fails and the sandbox reports this rather than hanging
+     or silently succeeding.
+  3. If no such tool is exposed to this session, record as SKIPPED — this is
+     exhaustively covered by `cargo test -p indra --test sovereign_sandbox`,
+     including a live network attempt and a memory-ceiling adversarial test.
+
+  ### Egress Proof (A5)
+  1. Note whether `EgressLog`/`trigger_probe` are reachable from this session.
+  2. If reachable, trigger a probe and confirm the attempt is recorded honestly —
+     Ok means blocked, Err means it actually reached the network. Neither outcome
+     is "wrong"; a networked dev machine reaching out is the correct, honest
+     result for that machine. What matters is that it is recorded either way.
+  3. If not reachable from this session, record as SKIPPED and reference
+     `crates/indra/tests/sovereign_egress_proof.rs`.
+
+  Log results to: {{ workspace_dir }}/phase3f_sovereign.md
   {% endif %}
 
   {% if test_phases == "all" or "advanced" in test_phases %}

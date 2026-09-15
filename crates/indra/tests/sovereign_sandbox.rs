@@ -46,3 +46,36 @@ fn sandbox_enforces_timeout() {
         .unwrap();
     assert!(out.timed_out, "long-running code was not terminated");
 }
+
+// unshare -n isolates the network only; without a memory ceiling a bomb like
+// this would run unbounded until the timeout, risking host OOM. This proves
+// the cap is real, not just documented: an allocation past the ceiling must
+// be killed or error out, never quietly succeed.
+//
+// A zero-filled bytearray is not a valid probe here: the kernel can satisfy
+// zero-filled anonymous memory via a shared zero page without committing any
+// real physical pages, so cgroup/ulimit accounting never sees the requested
+// size and the "allocation" silently costs nothing. Writing one distinct byte
+// per page forces genuine commitment of every page touched.
+#[test]
+fn sandbox_rejects_a_memory_bomb() {
+    let Ok(backend) = detect_backend() else {
+        eprintln!("no sandbox backend available; skipping");
+        return;
+    };
+    let code = r#"
+x = bytearray(2 * 1024 * 1024 * 1024)
+for i in range(0, len(x), 4096):
+    x[i] = 1
+print(len(x))
+"#;
+    let out = backend
+        .run(code, Duration::from_secs(20))
+        .expect("sandbox invocation itself should not error");
+
+    assert_ne!(
+        out.exit_code, 0,
+        "a 2GB allocation with every page touched succeeded — no memory ceiling is enforced: {}",
+        out.stdout
+    );
+}

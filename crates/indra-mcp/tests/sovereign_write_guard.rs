@@ -1,4 +1,4 @@
-use indra::sovereign::write_class::{guard_write, write_class_for, ResourceRef, WriteClass};
+use indra_mcp::sovereign::write_class::{guard_write, write_class_for, ResourceRef, WriteClass};
 use std::path::PathBuf;
 
 #[test]

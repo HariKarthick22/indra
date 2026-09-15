@@ -23,6 +23,7 @@ use std::sync::{
 };
 
 mod docx_tool;
+mod inspection_tool;
 mod pdf_tool;
 mod xlsx_tool;
 
@@ -211,6 +212,61 @@ pub struct XlsxToolParams {
     pub col: Option<u64>,
     /// New value for update_cell operation
     pub value: Option<String>,
+}
+
+/// Parameters for the ocr_extract_lines tool
+#[derive(Debug, Serialize, Deserialize, JsonSchema)]
+pub struct OcrExtractParams {
+    /// Path to the scanned document image (PNG/JPEG)
+    pub image_path: String,
+}
+
+/// Severity for an inspection finding
+#[derive(Debug, Serialize, Deserialize, JsonSchema, Clone)]
+#[serde(rename_all = "snake_case")]
+pub enum InspectionSeverity {
+    /// No concern
+    Normal,
+    /// Watch during next scheduled inspection
+    Monitor,
+    /// Requires immediate engineering attention
+    CriticalActionRequired,
+}
+
+/// A source region on a scanned page, from ocr_extract_lines output
+#[derive(Debug, Serialize, Deserialize, JsonSchema, Clone)]
+pub struct SourceBoxParams {
+    pub page: u32,
+    pub x: u32,
+    pub y: u32,
+    pub w: u32,
+    pub h: u32,
+}
+
+/// One finding to include in a generated approval note. `quoted_text` and
+/// `boxes` must come from a prior ocr_extract_lines call on the same
+/// document — the box is what lets a reader trace the finding back to the
+/// exact region of the scan that supports it.
+#[derive(Debug, Serialize, Deserialize, JsonSchema, Clone)]
+pub struct FindingParams {
+    /// The finding, in your own words (e.g. "Wall thickness below minimum")
+    pub text: String,
+    pub severity: InspectionSeverity,
+    /// Identifier of the source document (e.g. filename)
+    pub document_id: String,
+    /// The exact OCR'd text this finding is based on
+    pub quoted_text: String,
+    /// One or more source regions (from ocr_extract_lines) supporting this finding
+    pub boxes: Vec<SourceBoxParams>,
+}
+
+/// Parameters for the generate_inspection_approval_note tool
+#[derive(Debug, Serialize, Deserialize, JsonSchema)]
+pub struct ApprovalNoteParams {
+    /// Path to write the generated .docx to
+    pub output_path: String,
+    /// Findings to include, most significant first
+    pub findings: Vec<FindingParams>,
 }
 
 /// ComputerController MCP Server using official RMCP SDK
@@ -840,6 +896,51 @@ impl ComputerControllerServer {
                 .map_err(|e| ErrorData::new(e.code, e.message, e.data))?;
 
         Ok(CallToolResult::success(result))
+    }
+
+    /// Extract text lines with source coordinates from a scanned document
+    #[tool(
+        name = "ocr_extract_lines",
+        description = "
+            Run OCR on a scanned document image and return each detected text line
+            with its page number and bounding box (page, x, y, w, h).
+
+            Use this first on any scanned inspection report, drawing, or photograph
+            before drafting a citation-backed finding — pass the returned box(es) for
+            the text you cite into generate_inspection_approval_note, so the note
+            traces back to the exact region of the scan that supports each claim.
+        "
+    )]
+    pub async fn ocr_extract_lines(
+        &self,
+        params: Parameters<OcrExtractParams>,
+    ) -> Result<CallToolResult, ErrorData> {
+        let content = inspection_tool::ocr_extract(&params.0.image_path).await?;
+        Ok(CallToolResult::success(content))
+    }
+
+    /// Generate a citation-backed inspection approval note as a downloadable .docx
+    #[tool(
+        name = "generate_inspection_approval_note",
+        description = "
+            Write an inspection approval note as a real .docx file from a list of
+            findings. Each finding must carry a severity (normal/monitor/
+            critical_action_required) and a citation — the source document id, the
+            exact quoted text, and the bounding box(es) from a prior
+            ocr_extract_lines call. A finding without a real citation from OCR
+            output should not be included.
+
+            Use this after ocr_extract_lines has been run on the source document.
+        "
+    )]
+    pub async fn generate_inspection_approval_note(
+        &self,
+        params: Parameters<ApprovalNoteParams>,
+    ) -> Result<CallToolResult, ErrorData> {
+        let params = params.0;
+        let content =
+            inspection_tool::generate_approval_note(&params.output_path, params.findings).await?;
+        Ok(CallToolResult::success(content))
     }
 }
 

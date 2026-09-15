@@ -1,4 +1,4 @@
-use indra::sovereign::ingest::ocr_page;
+use indra_mcp::sovereign::ingest::ocr_page;
 use std::path::Path;
 
 #[test]

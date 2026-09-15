@@ -25,23 +25,27 @@ impl SandboxBackend for LinuxNamespace {
 
     fn run(&self, code: &str, timeout: Duration) -> Result<SandboxOutput> {
         let secs = timeout.as_secs().max(1).to_string();
+        // unshare -n only isolates the network. Without a memory ceiling, a
+        // fork bomb or a memory-exhausting script runs unchecked until
+        // `timeout` kills it, risking host OOM in that window — `ulimit -v`
+        // (kB) bounds each process's address space cheaply, no cgroups needed.
+        let shell_cmd = format!(
+            "ulimit -v 1048576; exec timeout {secs} python3 -c {}",
+            shell_quote(code)
+        );
         run_capturing(
             Command::new("unshare")
-                .args([
-                    "-n",
-                    "-p",
-                    "-f",
-                    "--mount-proc",
-                    "timeout",
-                    &secs,
-                    "python3",
-                    "-c",
-                    code,
-                ])
+                .args(["-n", "-p", "-f", "--mount-proc", "sh", "-c", &shell_cmd])
                 .stdout(Stdio::piped())
                 .stderr(Stdio::piped()),
         )
     }
+}
+
+// Single-quotes the argument for a POSIX shell, escaping embedded single
+// quotes as '\'' — closes the quote, emits an escaped quote, reopens it.
+fn shell_quote(s: &str) -> String {
+    format!("'{}'", s.replace('\'', r"'\''"))
 }
 
 impl SandboxBackend for DockerNoNetwork {

@@ -8,6 +8,14 @@ pub enum WriteClass {
     Gated,
 }
 
+/// Known limitation: classification is decided by which variant the *caller*
+/// constructs, not by anything intrinsic to the path. Nothing here checks that
+/// a path passed as `Deliverable` isn't actually a tracked source document
+/// elsewhere on disk — there is no canonical "sealed roots" registry a path
+/// is checked against. Not exploitable today because the only live caller,
+/// `deliverable::build_approval_note`, always constructs `Deliverable` from
+/// its own output-path argument. Revisit before any caller accepts an
+/// externally-influenced path for this decision.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ResourceRef {
     SourceDocument(PathBuf),
