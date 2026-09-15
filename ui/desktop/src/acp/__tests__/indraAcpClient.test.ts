@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { AnyMessage, Stream } from '@agentclientprotocol/sdk';
-import { connectGooseAcpClient, type GooseAcpCallbacks } from '../gooseAcpClient';
+import { connectGooseAcpClient, type GooseAcpCallbacks } from '../indraAcpClient';
 
 function createTestStream(): Stream & {
   push(message: AnyMessage): void;

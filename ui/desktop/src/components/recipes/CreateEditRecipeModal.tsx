@@ -3,7 +3,7 @@ import { useForm } from '@tanstack/react-form';
 import { generateDeepLink } from '../../recipe';
 import type { Recipe, Parameter, RecipeExtension, RecipeSettings } from '../../recipe';
 import { Check, ExternalLink, Play, Save, X } from 'lucide-react';
-import { Geese } from '../icons/Geese';
+import { Geese } from '../icons/IndraMark';
 import Copy from '../icons/Copy';
 import { Button } from '../ui/button';
 

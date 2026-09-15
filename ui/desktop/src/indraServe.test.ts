@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { buildLocalServeUrls, findGooseBinaryPath, startGooseServe } from './gooseServe';
+import { buildLocalServeUrls, findGooseBinaryPath, startGooseServe } from './indraServe';
 
 const binaryName = process.platform === 'win32' ? 'goose.exe' : 'goose';
 const tempDirs: string[] = [];
