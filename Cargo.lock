@@ -6093,6 +6093,7 @@ dependencies = [
  "indra-context-management",
  "indra-download-manager",
  "indra-mcp",
+ "indra-provider-types",
  "indra-providers",
  "indra-sdk-types",
  "indra-test-support",

@@ -19,6 +19,7 @@ pub mod dictation;
 pub mod doctor;
 pub mod download_manager;
 pub mod elicitation;
+pub mod events;
 pub mod execution;
 pub mod gateway;
 pub mod hints;
