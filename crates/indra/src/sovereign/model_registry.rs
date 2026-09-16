@@ -1,6 +1,8 @@
 use anyhow::{bail, Result};
 use serde::{Deserialize, Serialize};
+use std::net::{Ipv4Addr, Ipv6Addr};
 use std::path::PathBuf;
+use url::{Host, Url};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Backend {
@@ -151,28 +153,47 @@ pub fn select_model<'a>(
     })
 }
 
-/// Rejected at configuration time rather than request time: a non-loopback
-/// endpoint would turn universal model support into an egress hole.
+/// Rejected at configuration time rather than request time: an endpoint that
+/// can reach the public internet would turn universal model support into an
+/// egress hole.
+///
+/// A company's model server may run on a separate machine on the plant's own
+/// air-gapped network, so private LAN addresses are permitted alongside
+/// loopback. Domain names are refused even when they would resolve to a
+/// private address: resolution happens later and can change, so a name cannot
+/// be validated here in any way that still holds at request time. Configure
+/// the address literally.
 pub fn validate_backend(backend: &Backend) -> Result<()> {
     let Backend::LocalHttp { endpoint } = backend else {
         return Ok(());
     };
 
-    let host = endpoint
-        .split("://")
-        .nth(1)
-        .and_then(|rest| rest.split('/').next())
-        .and_then(|hostport| hostport.rsplit(':').next_back())
-        .unwrap_or_default();
+    let url = Url::parse(endpoint)
+        .map_err(|e| anyhow::anyhow!("LocalHttp endpoint {endpoint} is not a valid URL: {e}"))?;
 
-    let is_loopback = host == "localhost"
-        || host
-            .parse::<std::net::IpAddr>()
-            .map(|ip| ip.is_loopback())
-            .unwrap_or(false);
-
-    if !is_loopback {
-        bail!("LocalHttp endpoint {endpoint} is not loopback; this would violate A5");
+    match url.host() {
+        Some(Host::Ipv4(ip)) if is_internal_v4(&ip) => Ok(()),
+        Some(Host::Ipv6(ip)) if is_internal_v6(&ip) => Ok(()),
+        Some(Host::Domain("localhost")) => Ok(()),
+        Some(Host::Domain(name)) => bail!(
+            "LocalHttp endpoint {endpoint} uses the name '{name}'; configure the private IP \
+             literally, since a name resolves at request time and cannot be checked here"
+        ),
+        _ => bail!(
+            "LocalHttp endpoint {endpoint} is not a loopback or private-network address; \
+             this would violate A5"
+        ),
     }
-    Ok(())
+}
+
+fn is_internal_v4(ip: &Ipv4Addr) -> bool {
+    ip.is_loopback() || ip.is_private() || ip.is_link_local()
+}
+
+// Hand-rolled rather than using is_unique_local/is_unicast_link_local, which
+// are still unstable: fc00::/7 is unique-local, fe80::/10 is link-local.
+fn is_internal_v6(ip: &Ipv6Addr) -> bool {
+    let unique_local = ip.octets()[0] & 0xfe == 0xfc;
+    let link_local = ip.segments()[0] & 0xffc0 == 0xfe80;
+    ip.is_loopback() || unique_local || link_local
 }

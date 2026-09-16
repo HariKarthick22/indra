@@ -119,25 +119,46 @@ fn empty_registry_is_an_error_not_a_panic() {
 }
 
 #[test]
-fn remote_http_backend_is_rejected_at_configuration_time() {
+fn loopback_and_private_lan_endpoints_are_accepted() {
     use indra::sovereign::model_registry::validate_backend;
 
-    let ok = Backend::LocalHttp {
-        endpoint: "http://127.0.0.1:11434/v1".to_string(),
-    };
-    let also_ok = Backend::LocalHttp {
-        endpoint: "http://localhost:8000/v1".to_string(),
-    };
-    let bad = Backend::LocalHttp {
-        endpoint: "https://api.openai.com/v1".to_string(),
-    };
+    for endpoint in [
+        "http://127.0.0.1:11434/v1",
+        "http://localhost:8000/v1",
+        "http://10.4.2.15:8000/v1",
+        "http://172.16.0.9:8000/v1",
+        "http://192.168.1.50:8000/v1",
+        "http://[::1]:8000/v1",
+    ] {
+        let backend = Backend::LocalHttp {
+            endpoint: endpoint.to_string(),
+        };
+        assert!(
+            validate_backend(&backend).is_ok(),
+            "{endpoint} is on the plant's own network and must be allowed"
+        );
+    }
+}
 
-    assert!(validate_backend(&ok).is_ok());
-    assert!(validate_backend(&also_ok).is_ok());
-    assert!(
-        validate_backend(&bad).is_err(),
-        "a non-loopback endpoint would silently void A5"
-    );
+#[test]
+fn public_and_named_endpoints_are_rejected_at_configuration_time() {
+    use indra::sovereign::model_registry::validate_backend;
+
+    for endpoint in [
+        "https://api.openai.com/v1",
+        "http://8.8.8.8:8000/v1",
+        // A name is refused even though it looks internal: it resolves at
+        // request time, so nothing checked here still holds by then.
+        "http://ml-server.plant.internal:8000/v1",
+    ] {
+        let backend = Backend::LocalHttp {
+            endpoint: endpoint.to_string(),
+        };
+        assert!(
+            validate_backend(&backend).is_err(),
+            "{endpoint} could reach outside the plant network and would void A5"
+        );
+    }
 }
 
 #[test]
