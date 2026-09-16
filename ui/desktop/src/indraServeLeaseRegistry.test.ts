@@ -1,10 +1,10 @@
 import { EventEmitter } from 'node:events';
 import { describe, expect, it, vi } from 'vitest';
-import type { GooseServeResult, Logger } from './gooseServe';
+import type { GooseServeResult, Logger } from './indraServe';
 import {
   GOOSE_SERVE_EXITED_USER_MESSAGE,
   GooseServeLeaseRegistry,
-} from './gooseServeLeaseRegistry';
+} from './indraServeLeaseRegistry';
 
 function createLogger(): Logger {
   return {

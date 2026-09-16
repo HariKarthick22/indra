@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { INDRA_SERVE_EXITED_USER_MESSAGE } from '../../gooseServeLeaseRegistry';
+import { GOOSE_SERVE_EXITED_USER_MESSAGE } from '../../indraServeLeaseRegistry';
 
 const mockClientFactory = vi.hoisted(() => {
   const initialize = vi.fn();
@@ -139,13 +139,13 @@ describe('ACP connection ownership', () => {
     const getAcpUrl = vi
       .fn()
       .mockRejectedValue(
-        new Error(`Error invoking remote method 'get-acp-url': ${INDRA_SERVE_EXITED_USER_MESSAGE}`)
+        new Error(`Error invoking remote method 'get-acp-url': ${GOOSE_SERVE_EXITED_USER_MESSAGE}`)
       );
     window.electron.getAcpUrl = getAcpUrl;
     mockClientFactory.instances[0].resolveClosed();
     await Promise.resolve();
 
-    const connection = expect(getAcpClient()).rejects.toThrow(INDRA_SERVE_EXITED_USER_MESSAGE);
+    const connection = expect(getAcpClient()).rejects.toThrow(GOOSE_SERVE_EXITED_USER_MESSAGE);
     await vi.advanceTimersByTimeAsync(250);
     await connection;
 
@@ -161,17 +161,17 @@ describe('ACP connection ownership', () => {
     const getAcpUrl = vi
       .fn()
       .mockRejectedValue(
-        new Error(`Error invoking remote method 'get-acp-url': ${INDRA_SERVE_EXITED_USER_MESSAGE}`)
+        new Error(`Error invoking remote method 'get-acp-url': ${GOOSE_SERVE_EXITED_USER_MESSAGE}`)
       );
     window.electron.getAcpUrl = getAcpUrl;
     mockClientFactory.instances[0].resolveClosed();
     await Promise.resolve();
 
-    const failedRecovery = expect(getAcpClient()).rejects.toThrow(INDRA_SERVE_EXITED_USER_MESSAGE);
+    const failedRecovery = expect(getAcpClient()).rejects.toThrow(GOOSE_SERVE_EXITED_USER_MESSAGE);
     await vi.advanceTimersByTimeAsync(250);
     await failedRecovery;
 
-    await expect(getAcpClient()).rejects.toThrow(INDRA_SERVE_EXITED_USER_MESSAGE);
+    await expect(getAcpClient()).rejects.toThrow(GOOSE_SERVE_EXITED_USER_MESSAGE);
 
     expect(getAcpUrl).toHaveBeenCalledTimes(2);
     expect(mockClientFactory.instances).toHaveLength(1);

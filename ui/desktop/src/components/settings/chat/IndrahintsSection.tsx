@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '../../ui/button';
 import { FolderKey } from 'lucide-react';
-import { GoosehintsModal } from './GoosehintsModal';
+import { GoosehintsModal } from './IndrahintsModal';
 import { defineMessages, useIntl } from '../../../i18n';
 
 const i18n = defineMessages({

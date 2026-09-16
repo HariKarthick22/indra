@@ -2,7 +2,7 @@ import { ModeSection } from '../mode/ModeSection';
 import { DictationSettings } from '../dictation/DictationSettings';
 import { SecurityToggle } from '../security/SecurityToggle';
 import { ResponseStylesSection } from '../response_styles/ResponseStylesSection';
-import { GoosehintsSection } from './GoosehintsSection';
+import { GoosehintsSection } from './IndrahintsSection';
 import { SpellcheckToggle } from './SpellcheckToggle';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card';
 import { defineMessages, useIntl } from '../../../i18n';

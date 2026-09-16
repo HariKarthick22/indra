@@ -1,7 +1,7 @@
 import { Fragment, memo, useEffect, useMemo, useRef, useState } from 'react';
 import { isEqual } from 'lodash';
 import { defineMessages, useIntl } from '../i18n';
-import GooseMessage from './GooseMessage';
+import GooseMessage from './IndraMessage';
 import UserMessage from './UserMessage';
 import {
   SystemNotificationInline,
@@ -17,7 +17,7 @@ import type {
   NotificationEvent,
   SystemNotificationContent,
 } from '../types/message';
-import LoadingGoose from './LoadingGoose';
+import LoadingGoose from './LoadingIndra';
 import { getModelDisplayName } from './settings/models/predefinedModelsUtils';
 import { deriveMessageRowContexts, type MessageRowContext } from './messageRowContext';
 

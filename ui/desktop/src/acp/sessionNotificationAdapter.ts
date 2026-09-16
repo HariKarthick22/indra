@@ -6,7 +6,7 @@ import {
   applyElicitationStatus as applyElicitationStatusToState,
   type ElicitationStatus,
 } from './adapter/elicitations';
-import { applyGooseSessionNotification } from './adapter/gooseSessionNotifications';
+import { applyGooseSessionNotification } from './adapter/indraSessionNotifications';
 import { applyContentChunk, applyThoughtChunk } from './adapter/messages';
 import {
   applyPermissionRequest as applyPermissionRequestToState,

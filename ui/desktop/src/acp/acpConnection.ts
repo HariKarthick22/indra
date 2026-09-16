@@ -2,7 +2,7 @@ import { DEFAULT_GOOSE_MCP_HOST_CAPABILITIES } from '@aaif/goose-acp-client';
 import { methods, PROTOCOL_VERSION, type InitializeResponse } from '@agentclientprotocol/sdk';
 import { createWebSocketStream } from '@agentclientprotocol/sdk/experimental/ws-client';
 import packageJson from '../../package.json';
-import { INDRA_SERVE_EXITED_USER_MESSAGE } from '../gooseServeLeaseRegistry';
+import { GOOSE_SERVE_EXITED_USER_MESSAGE } from '../indraServeLeaseRegistry';
 import {
   handleAcpGooseSessionNotification,
   handleAcpProviderDeviceCodeNotification,
@@ -13,7 +13,7 @@ import {
   connectGooseAcpClient,
   type GooseAcpCallbacks,
   type GooseAcpClient,
-} from './gooseAcpClient';
+} from './indraAcpClient';
 import { requestAcpPermission } from './permissionRequests';
 import { requestAcpRecipeParams } from './recipeParamRequests';
 
@@ -208,7 +208,7 @@ async function retryWithBackoff(generation: number): Promise<AcpConnection> {
 }
 
 function isGooseServeExitedError(error: unknown): boolean {
-  return error instanceof Error && error.message.includes(INDRA_SERVE_EXITED_USER_MESSAGE);
+  return error instanceof Error && error.message.includes(GOOSE_SERVE_EXITED_USER_MESSAGE);
 }
 
 function delay(delayMs: number): Promise<void> {

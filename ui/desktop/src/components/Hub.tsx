@@ -18,7 +18,7 @@ import { View, ViewOptions } from '../utils/navigationUtils';
 import { useConfig } from './ConfigContext';
 import { getEffectiveWorkingDir, getInitialWorkingDir } from '../utils/workingDir';
 import { createSession } from '../sessions';
-import LoadingGoose from './LoadingGoose';
+import LoadingGoose from './LoadingIndra';
 import { UserInput } from '../types/message';
 import {
   createNextChatExtensionDraft,

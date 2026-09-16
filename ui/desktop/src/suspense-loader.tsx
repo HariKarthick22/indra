@@ -1,4 +1,4 @@
-import GooseLogo from './components/GooseLogo';
+import GooseLogo from './components/IndraLogo';
 
 export default function SuspenseLoader() {
   return (

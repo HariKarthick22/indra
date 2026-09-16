@@ -1,4 +1,4 @@
-import GooseLogo from './GooseLogo';
+import GooseLogo from './IndraLogo';
 import AnimatedIcons from './AnimatedIcons';
 import FlyingBird from './FlyingBird';
 import { ChatState } from '../types/chatState';

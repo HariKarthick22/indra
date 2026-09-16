@@ -1,5 +1,5 @@
 import { Card } from '../ui/card';
-import GooseLogo from '../GooseLogo';
+import GooseLogo from '../IndraLogo';
 import MarkdownContent from '../MarkdownContent';
 import { substituteParameters } from '../../utils/parameterSubstitution';
 

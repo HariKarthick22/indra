@@ -18,7 +18,7 @@ import { Gavel } from './Gavel';
 import { GlassWater } from './GlassWater';
 import { Grape } from './Grape';
 import { Gear } from './Gear';
-import { Goose } from './Goose';
+import { Goose } from './Indra';
 import { Microphone } from './Microphone';
 import { Watch0 } from './Watch0';
 import { Watch1 } from './Watch1';
