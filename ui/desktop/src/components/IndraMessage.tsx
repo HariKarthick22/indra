@@ -19,7 +19,6 @@ import ExecutionTimeline from './ExecutionTimeline';
 import ToolCallConfirmation from './ToolCallConfirmation';
 import ElicitationRequest from './ElicitationRequest';
 import MessageCopyLink from './MessageCopyLink';
-import MessageUsageStats from './MessageUsageStats';
 import { cn } from '../utils';
 import type { ToolRenderState } from './messageRowContext';
 import {
@@ -139,18 +138,13 @@ function GooseMessage({
             {toolRequests.length === 0 && (
               <div className="relative flex items-center justify-between">
                 {!isStreaming && (
-                  <div className="text-xs font-mono text-text-secondary pt-1 transition-all duration-200 group-hover:-translate-y-4 group-hover:opacity-0">
+                  <div className="text-xs font-mono text-text-secondary pt-1">
                     {timestamp}
                   </div>
                 )}
                 {message.content.every((content) => content.type === 'text') && !isStreaming && (
                   <div className="absolute left-0 pt-1">
                     <MessageCopyLink text={displayText} contentRef={contentRef} />
-                  </div>
-                )}
-                {!isStreaming && message.metadata.usage && (
-                  <div className="pt-1 transition-all duration-200 opacity-0 group-hover:opacity-100 -translate-y-4 group-hover:translate-y-0">
-                    <MessageUsageStats usage={message.metadata.usage} />
                   </div>
                 )}
               </div>
@@ -187,20 +181,9 @@ function GooseMessage({
                 })}
               </div>
               <div className="flex items-center justify-between">
-                <div
-                  className={cn(
-                    'text-xs text-text-secondary pt-1',
-                    message.metadata.usage &&
-                      'transition-all duration-200 group-hover:-translate-y-4 group-hover:opacity-0'
-                  )}
-                >
+                <div className="text-xs text-text-secondary pt-1">
                   {!isStreaming && !hideTimestamp && timestamp}
                 </div>
-                {!isStreaming && message.metadata.usage && (
-                  <div className="pt-1 transition-all duration-200 opacity-0 group-hover:opacity-100 -translate-y-4 group-hover:translate-y-0">
-                    <MessageUsageStats usage={message.metadata.usage} />
-                  </div>
-                )}
               </div>
             </div>
           </div>
