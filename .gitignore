@@ -39,6 +39,7 @@ ui/desktop/src/bin/goose_llm.dll
 
 # Claude
 .claude/settings.local.json
+.claude/indra-traces.jsonl
 
 debug_*.txt
 
@@ -108,5 +109,4 @@ venv/
 # Local scratch
 *.orig
 *.rej
-.claude/
 .worktrees/
